@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual Module Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-result {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Individual Module Test</h1>
+    <div id="results"></div>
+
+    <script>
+        function addResult(title, message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+            results.appendChild(div);
+        }
+
+        // Capture console errors
+        const originalError = console.error;
+        const errors = [];
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            originalError.apply(console, args);
+        };
+
+        // Test 1: Storage Module Only
+        addResult('Test 1: Storage Module', 'Loading storage.js...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script>
+        if (typeof storage !== 'undefined') {
+            addResult('Test 1: Storage Module', '✓ Storage module loaded successfully', 'success');
+        } else {
+            addResult('Test 1: Storage Module', '✗ Storage module failed to load', 'error');
+        }
+        if (errors.length > 0) {
+            addResult('Test 1: Storage Module', 'Errors: ' + errors.join('; '), 'error');
+            errors.length = 0; // Clear errors
+        }
+    </script>
+
+    <script>
+        addResult('Test 2: CSV Parser Module', 'Loading csvParser.js...');
+    </script>
+
+    <script src="scripts/csvParser.js"></script>
+    <script>
+        if (typeof csvParser !== 'undefined') {
+            addResult('Test 2: CSV Parser Module', '✓ CSV Parser module loaded successfully', 'success');
+        } else {
+            addResult('Test 2: CSV Parser Module', '✗ CSV Parser module failed to load', 'error');
+        }
+        if (errors.length > 0) {
+            addResult('Test 2: CSV Parser Module', 'Errors: ' + errors.join('; '), 'error');
+            errors.length = 0;
+        }
+    </script>
+
+    <script>
+        addResult('Test 3: Quiz Engine Module', 'Loading quizEngine.js...');
+    </script>
+
+    <script src="scripts/quizEngine.js"></script>
+    <script>
+        if (typeof quizEngine !== 'undefined') {
+            addResult('Test 3: Quiz Engine Module', '✓ Quiz Engine module loaded successfully', 'success');
+        } else {
+            addResult('Test 3: Quiz Engine Module', '✗ Quiz Engine module failed to load', 'error');
+        }
+        if (errors.length > 0) {
+            addResult('Test 3: Quiz Engine Module', 'Errors: ' + errors.join('; '), 'error');
+            errors.length = 0;
+        }
+    </script>
+
+    <script>
+        addResult('Test 4: UI Module', 'Loading ui.js...');
+    </script>
+
+    <script src="scripts/ui.js"></script>
+    <script>
+        if (typeof ui !== 'undefined') {
+            addResult('Test 4: UI Module', '✓ UI module loaded successfully', 'success');
+        } else {
+            addResult('Test 4: UI Module', '✗ UI module failed to load', 'error');
+        }
+        if (errors.length > 0) {
+            addResult('Test 4: UI Module', 'Errors: ' + errors.join('; '), 'error');
+            errors.length = 0;
+        }
+    </script>
+
+    <script>
+        addResult('Test 5: App Module', 'Loading app.js...');
+    </script>
+
+    <script src="scripts/app.js"></script>
+    <script>
+        if (typeof vocabApp !== 'undefined') {
+            addResult('Test 5: App Module', '✓ App module loaded successfully', 'success');
+        } else {
+            addResult('Test 5: App Module', '✗ App module failed to load', 'error');
+        }
+        if (errors.length > 0) {
+            addResult('Test 5: App Module', 'Errors: ' + errors.join('; '), 'error');
+            errors.length = 0;
+        }
+    </script>
+
+    <script>
+        // Final summary
+        setTimeout(() => {
+            const modules = ['storage', 'csvParser', 'quizEngine', 'ui', 'vocabApp'];
+            const available = modules.filter(m => typeof window[m] !== 'undefined');
+            const missing = modules.filter(m => typeof window[m] === 'undefined');
+            
+            if (available.length === modules.length) {
+                addResult('Final Result', `✓ All ${modules.length} modules loaded successfully!`, 'success');
+            } else {
+                addResult('Final Result', `✗ Only ${available.length}/${modules.length} modules loaded. Missing: ${missing.join(', ')}`, 'error');
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

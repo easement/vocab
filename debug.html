@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - French Vocabulary Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Panel - French Vocabulary Learning App</h1>
+    
+    <div class="debug-panel">
+        <h2>Module Loading Test</h2>
+        <div id="module-status"></div>
+        <button onclick="testModules()">Test Modules</button>
+    </div>
+
+    <div class="debug-panel">
+        <h2>Storage Test</h2>
+        <div id="storage-status"></div>
+        <button onclick="testStorage()">Test Storage</button>
+    </div>
+
+    <div class="debug-panel">
+        <h2>CSV Parser Test</h2>
+        <div id="csv-status"></div>
+        <button onclick="testCSVParser()">Test CSV Parser</button>
+    </div>
+
+    <div class="debug-panel">
+        <h2>Quiz Engine Test</h2>
+        <div id="quiz-status"></div>
+        <button onclick="testQuizEngine()">Test Quiz Engine</button>
+    </div>
+
+    <div class="debug-panel">
+        <h2>UI Test</h2>
+        <div id="ui-status"></div>
+        <button onclick="testUI()">Test UI</button>
+    </div>
+
+    <div class="debug-panel">
+        <h2>Full App Test</h2>
+        <div id="app-status"></div>
+        <button onclick="testFullApp()">Test Full App</button>
+    </div>
+
+    <script>
+        function logStatus(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const className = isError ? 'error' : 'success';
+            element.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+
+        function testModules() {
+            logStatus('module-status', 'Testing module availability...');
+            
+            const modules = ['storage', 'csvParser', 'quizEngine', 'ui'];
+            const missing = [];
+            
+            modules.forEach(module => {
+                if (typeof window[module] === 'undefined') {
+                    missing.push(module);
+                }
+            });
+            
+            if (missing.length > 0) {
+                logStatus('module-status', `Missing modules: ${missing.join(', ')}`, true);
+            } else {
+                logStatus('module-status', 'All modules loaded successfully!');
+            }
+        }
+
+        function testStorage() {
+            logStatus('storage-status', 'Testing storage functionality...');
+            
+            try {
+                if (typeof storage === 'undefined') {
+                    logStatus('storage-status', 'Storage module not loaded', true);
+                    return;
+                }
+                
+                // Test localStorage availability
+                if (!storage.isAvailable()) {
+                    logStatus('storage-status', 'localStorage is not available', true);
+                    return;
+                }
+                
+                // Test basic operations
+                const testData = [{ french: 'test', english: 'test', mastered: false }];
+                storage.saveVocabulary(testData);
+                const loaded = storage.loadVocabulary();
+                
+                if (loaded && loaded.length > 0) {
+                    logStatus('storage-status', 'Storage operations working correctly!');
+                } else {
+                    logStatus('storage-status', 'Storage operations failed', true);
+                }
+                
+            } catch (error) {
+                logStatus('storage-status', `Storage error: ${error.message}`, true);
+            }
+        }
+
+        function testCSVParser() {
+            logStatus('csv-status', 'Testing CSV parser...');
+            
+            try {
+                if (typeof csvParser === 'undefined') {
+                    logStatus('csv-status', 'CSV Parser module not loaded', true);
+                    return;
+                }
+                
+                const testCSV = 'french,english\nchat,cat\nchien,dog\nmaison,house\nvoiture,car';
+                const result = csvParser.parseCSV(testCSV);
+                
+                if (result.success) {
+                    logStatus('csv-status', `CSV parsing successful! Found ${result.vocabulary.length} words.`);
+                } else {
+                    logStatus('csv-status', `CSV parsing failed: ${result.error}`, true);
+                }
+                
+            } catch (error) {
+                logStatus('csv-status', `CSV Parser error: ${error.message}`, true);
+            }
+        }
+
+        function testQuizEngine() {
+            logStatus('quiz-status', 'Testing quiz engine...');
+            
+            try {
+                if (typeof quizEngine === 'undefined') {
+                    logStatus('quiz-status', 'Quiz Engine module not loaded', true);
+                    return;
+                }
+                
+                const testVocab = [
+                    { french: 'chat', english: 'cat', mastered: false },
+                    { french: 'chien', english: 'dog', mastered: false },
+                    { french: 'maison', english: 'house', mastered: false },
+                    { french: 'voiture', english: 'car', mastered: false }
+                ];
+                
+                quizEngine.initialize(testVocab);
+                const nextWord = quizEngine.getNextWord();
+                
+                if (nextWord) {
+                    logStatus('quiz-status', 'Quiz engine working! Next word loaded successfully.');
+                } else {
+                    logStatus('quiz-status', 'Quiz engine failed to get next word', true);
+                }
+                
+            } catch (error) {
+                logStatus('quiz-status', `Quiz Engine error: ${error.message}`, true);
+            }
+        }
+
+        function testUI() {
+            logStatus('ui-status', 'Testing UI components...');
+            
+            try {
+                if (typeof ui === 'undefined') {
+                    logStatus('ui-status', 'UI module not loaded', true);
+                    return;
+                }
+                
+                // Test if UI can access DOM elements
+                const screens = ui.screens;
+                const modals = ui.modals;
+                
+                if (screens && modals) {
+                    logStatus('ui-status', 'UI module initialized successfully!');
+                } else {
+                    logStatus('ui-status', 'UI module initialization failed', true);
+                }
+                
+            } catch (error) {
+                logStatus('ui-status', `UI error: ${error.message}`, true);
+            }
+        }
+
+        function testFullApp() {
+            logStatus('app-status', 'Testing full application...');
+            
+            try {
+                if (typeof vocabApp === 'undefined') {
+                    logStatus('app-status', 'Main app not loaded', true);
+                    return;
+                }
+                
+                const stats = vocabApp.getAppStats();
+                logStatus('app-status', 'Full application loaded and working!');
+                
+            } catch (error) {
+                logStatus('app-status', `Full app error: ${error.message}`, true);
+            }
+        }
+
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testModules();
+                testStorage();
+                testCSVParser();
+                testQuizEngine();
+                testUI();
+                testFullApp();
+            }, 1000);
+        });
+    </script>
+
+    <!-- Load the actual app scripts -->
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html> 

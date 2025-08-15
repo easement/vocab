@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Module Test</title>
+</head>
+<body>
+    <h1>Simple Module Test</h1>
+    <div id="output"></div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<p>' + message + '</p>';
+            console.log(message);
+        }
+
+        log('Starting module test...');
+
+        // Test each script individually
+        try {
+            log('Loading storage.js...');
+            // We'll load scripts dynamically to see which one fails
+        } catch (error) {
+            log('Error: ' + error.message);
+        }
+    </script>
+
+    <script src="scripts/storage.js" onload="log('storage.js loaded successfully')" onerror="log('storage.js failed to load')"></script>
+    <script src="scripts/csvParser.js" onload="log('csvParser.js loaded successfully')" onerror="log('csvParser.js failed to load')"></script>
+    <script src="scripts/quizEngine.js" onload="log('quizEngine.js loaded successfully')" onerror="log('quizEngine.js failed to load')"></script>
+    <script src="scripts/ui.js" onload="log('ui.js loaded successfully')" onerror="log('ui.js failed to load')"></script>
+    <script src="scripts/app.js" onload="log('app.js loaded successfully')" onerror="log('app.js failed to load')"></script>
+
+    <script>
+        setTimeout(() => {
+            log('Checking for global variables...');
+            
+            if (typeof storage !== 'undefined') {
+                log('✓ storage is available');
+            } else {
+                log('✗ storage is NOT available');
+            }
+            
+            if (typeof csvParser !== 'undefined') {
+                log('✓ csvParser is available');
+            } else {
+                log('✗ csvParser is NOT available');
+            }
+            
+            if (typeof quizEngine !== 'undefined') {
+                log('✓ quizEngine is available');
+            } else {
+                log('✗ quizEngine is NOT available');
+            }
+            
+            if (typeof ui !== 'undefined') {
+                log('✓ ui is available');
+            } else {
+                log('✗ ui is NOT available');
+            }
+            
+            if (typeof vocabApp !== 'undefined') {
+                log('✓ vocabApp is available');
+            } else {
+                log('✗ vocabApp is NOT available');
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Auto-Advance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Auto-Advance Functionality</h1>
+    
+    <div class="test-panel">
+        <h2>Instructions</h2>
+        <p>1. Upload the sample CSV file</p>
+        <p>2. Answer a question correctly - should auto-advance after 1 second</p>
+        <p>3. Answer a question incorrectly - should auto-advance after 2 seconds</p>
+        <p>4. The "Next Word" button should show appropriate countdown</p>
+    </div>
+
+    <div class="test-panel">
+        <h2>Test Log</h2>
+        <div id="test-log"></div>
+    </div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('test-log');
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(div);
+        }
+
+        // Track auto-advance functionality
+        let originalStartAutoAdvance;
+        let originalCancelAutoAdvance;
+        let autoAdvanceStarted = false;
+        let autoAdvanceCancelled = false;
+
+        addLog('Setting up auto-advance monitoring...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        setTimeout(() => {
+            if (typeof ui !== 'undefined') {
+                // Override auto-advance methods to track calls
+                originalStartAutoAdvance = ui.startAutoAdvance;
+                originalCancelAutoAdvance = ui.cancelAutoAdvance;
+
+                ui.startAutoAdvance = function(isCorrect) {
+                    autoAdvanceStarted = true;
+                    const timing = isCorrect ? '1 second' : '2 seconds';
+                    addLog(`Auto-advance started (${timing} for ${isCorrect ? 'correct' : 'incorrect'} answer)`, 'success');
+                    return originalStartAutoAdvance.call(this, isCorrect);
+                };
+
+                ui.cancelAutoAdvance = function() {
+                    autoAdvanceCancelled = true;
+                    addLog('Auto-advance cancelled', 'info');
+                    return originalCancelAutoAdvance.call(this);
+                };
+
+                addLog('Auto-advance monitoring active', 'success');
+                addLog('Ready to test! Upload a CSV file and answer a question.');
+            } else {
+                addLog('UI module not available', 'error');
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

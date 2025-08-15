@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Vocabulary Learning</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Upload Screen -->
+        <div id="upload-screen" class="screen active">
+            <header>
+                <h1>French Vocabulary Learning</h1>
+                <p>Upload a CSV file to start learning French vocabulary</p>
+            </header>
+            
+            <main>
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-content">
+                            <div class="upload-icon">📁</div>
+                            <h2>Upload CSV File</h2>
+                            <p>Drag and drop your CSV file here or click to browse</p>
+                            <p class="format-info">Format: french,english (with headers)</p>
+                            <input type="file" id="file-input" accept=".csv" hidden>
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                                Choose File
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="example-section">
+                        <h3>Example CSV Format:</h3>
+                        <pre><code>french,english
+chat,cat
+chien,dog
+maison,house
+voiture,car</code></pre>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="screen">
+            <header>
+                <div class="header-content">
+                    <h1>French Vocabulary Quiz</h1>
+                    <div class="progress-container">
+                        <div class="progress-stats">
+                            <span id="mastered-count">0</span> / <span id="total-count">0</span> mastered
+                            (<span id="percentage">0</span>%)
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                <button id="reset-btn" class="btn btn-secondary" aria-label="Reset progress">Reset</button>
+            </header>
+
+            <main>
+                <div class="quiz-container">
+                    <div class="question-section">
+                        <h2 id="french-word">Select a word</h2>
+                        <p class="instruction">Choose the correct English translation:</p>
+                    </div>
+
+                    <div class="answers-section">
+                        <div class="answer-grid">
+                            <button class="answer-btn" data-index="0" tabindex="0">
+                                <span class="answer-number">1</span>
+                                <span class="answer-text" id="answer-0">Loading...</span>
+                            </button>
+                            <button class="answer-btn" data-index="1" tabindex="0">
+                                <span class="answer-number">2</span>
+                                <span class="answer-text" id="answer-1">Loading...</span>
+                            </button>
+                            <button class="answer-btn" data-index="2" tabindex="0">
+                                <span class="answer-number">3</span>
+                                <span class="answer-text" id="answer-2">Loading...</span>
+                            </button>
+                            <button class="answer-btn" data-index="3" tabindex="0">
+                                <span class="answer-number">4</span>
+                                <span class="answer-text" id="answer-3">Loading...</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-section" id="feedback-section" hidden>
+                        <div class="feedback-content">
+                            <div class="feedback-icon" id="feedback-icon"></div>
+                            <div class="feedback-text" id="feedback-text"></div>
+                            <button class="btn btn-primary" id="next-btn">Next Word</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Completion Screen -->
+        <div id="completion-screen" class="screen">
+            <header>
+                <h1>Congratulations!</h1>
+            </header>
+            
+            <main>
+                <div class="completion-container">
+                    <div class="completion-icon">🎉</div>
+                    <h2>You've mastered all the vocabulary!</h2>
+                    <p>You've successfully learned all <span id="final-count">0</span> words.</p>
+                    <div class="completion-actions">
+                        <button class="btn btn-primary" id="restart-btn">Start Over</button>
+                        <button class="btn btn-secondary" id="new-vocab-btn">Upload New Vocabulary</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for reset confirmation -->
+    <div id="reset-modal" class="modal" hidden>
+        <div class="modal-content">
+            <h3>Reset Progress</h3>
+            <p>Are you sure you want to reset your progress? This will clear all mastered words and start over.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancel-reset">Cancel</button>
+                <button class="btn btn-danger" id="confirm-reset">Reset Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal" hidden>
+        <div class="modal-content">
+            <h3>Error</h3>
+            <p id="error-message">An error occurred.</p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="close-error">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html> 

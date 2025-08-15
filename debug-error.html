@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Error Modal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-log {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Error Modal</h1>
+    <div id="debug-logs"></div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const logs = document.getElementById('debug-logs');
+            const div = document.createElement('div');
+            div.className = `debug-log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        // Track when error modal is shown
+        const originalShowModal = window.showModal;
+        window.showModal = function(modalName) {
+            addLog(`showModal called with: ${modalName}`, 'error');
+            if (originalShowModal) {
+                return originalShowModal.apply(this, arguments);
+            }
+        };
+
+        // Track when showError is called
+        const originalShowError = window.showError;
+        window.showError = function(message) {
+            addLog(`showError called with: ${message}`, 'error');
+            if (originalShowError) {
+                return originalShowError.apply(this, arguments);
+            }
+        };
+
+        addLog('Starting debug...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        // Override the UI showModal method to track calls
+        if (typeof ui !== 'undefined') {
+            const originalUIShowModal = ui.showModal;
+            ui.showModal = function(modalName) {
+                addLog(`UI showModal called with: ${modalName}`, 'error');
+                return originalUIShowModal.call(this, modalName);
+            };
+
+            const originalUIShowError = ui.showError;
+            ui.showError = function(message) {
+                addLog(`UI showError called with: ${message}`, 'error');
+                return originalUIShowError.call(this, message);
+            };
+        }
+
+        // Override the app showError method to track calls
+        if (typeof vocabApp !== 'undefined') {
+            const originalAppShowError = vocabApp.showError;
+            vocabApp.showError = function(message) {
+                addLog(`App showError called with: ${message}`, 'error');
+                return originalAppShowError.call(this, message);
+            };
+        }
+
+        setTimeout(() => {
+            addLog('Debug setup complete');
+        }, 1000);
+    </script>
+</body>
+</html> 

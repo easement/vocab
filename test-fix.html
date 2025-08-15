@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fix - French Vocabulary Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Fix - French Vocabulary Learning App</h1>
+    
+    <div class="test-panel">
+        <h2>Initialization Test</h2>
+        <div id="init-status" class="status info">Testing initialization...</div>
+        <div id="ui-status" class="status info">Testing UI...</div>
+        <div id="app-status" class="status info">Testing app...</div>
+    </div>
+
+    <div class="test-panel">
+        <h2>Console Output</h2>
+        <div id="console-output" style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        // Capture console output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleOutput = document.getElementById('console-output');
+        
+        function addToConsole(type, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.innerHTML = `<span style="color: #666;">[${timestamp}]</span> <span style="color: ${type === 'error' ? 'red' : 'blue'};">${type.toUpperCase()}:</span> ${message}`;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole('log', args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole('error', args.join(' '));
+        };
+
+        function updateStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        // Test the app initialization
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                updateStatus('init-status', 'Checking module availability...', 'info');
+                
+                // Check if modules are loaded
+                const modules = ['storage', 'csvParser', 'quizEngine', 'ui'];
+                const missing = modules.filter(m => typeof window[m] === 'undefined');
+                
+                if (missing.length > 0) {
+                    updateStatus('init-status', `Missing modules: ${missing.join(', ')}`, 'error');
+                    return;
+                }
+                
+                updateStatus('init-status', 'All modules loaded successfully!', 'success');
+                
+                // Test UI initialization
+                setTimeout(() => {
+                    if (ui.isInitialized) {
+                        updateStatus('ui-status', 'UI initialized successfully!', 'success');
+                    } else {
+                        updateStatus('ui-status', 'UI initialization failed or incomplete', 'error');
+                    }
+                    
+                    // Test app initialization
+                    setTimeout(() => {
+                        if (typeof vocabApp !== 'undefined' && vocabApp.isInitialized) {
+                            updateStatus('app-status', 'App initialized successfully!', 'success');
+                        } else {
+                            updateStatus('app-status', 'App initialization failed or incomplete', 'error');
+                        }
+                    }, 500);
+                    
+                }, 500);
+                
+            }, 1000);
+        });
+    </script>
+
+    <!-- Load the app scripts -->
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html> 

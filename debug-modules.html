@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Modules</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Module Debugging</h1>
+    
+    <div class="debug-section">
+        <h2>Step 1: Load Storage Module</h2>
+        <div id="storage-debug"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>Step 2: Load CSV Parser Module</h2>
+        <div id="csv-debug"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>Step 3: Load Quiz Engine Module</h2>
+        <div id="quiz-debug"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>Step 4: Load UI Module</h2>
+        <div id="ui-debug"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>Step 5: Load App Module</h2>
+        <div id="app-debug"></div>
+    </div>
+
+    <div class="debug-section">
+        <h2>Final Check</h2>
+        <div id="final-debug"></div>
+    </div>
+
+    <script>
+        function logDebug(sectionId, message, type = 'info') {
+            const section = document.getElementById(sectionId);
+            const div = document.createElement('div');
+            div.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
+            div.className = type;
+            section.appendChild(div);
+        }
+
+        function checkGlobal(name) {
+            return typeof window[name] !== 'undefined';
+        }
+
+        // Step 1: Load Storage
+        logDebug('storage-debug', 'Loading storage.js...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script>
+        if (checkGlobal('storage')) {
+            logDebug('storage-debug', '✓ Storage module loaded successfully', 'success');
+            logDebug('storage-debug', `Storage methods: ${Object.getOwnPropertyNames(storage.__proto__).join(', ')}`);
+        } else {
+            logDebug('storage-debug', '✗ Storage module failed to load', 'error');
+        }
+    </script>
+
+    <script>
+        logDebug('csv-debug', 'Loading csvParser.js...');
+    </script>
+
+    <script src="scripts/csvParser.js"></script>
+    <script>
+        if (checkGlobal('csvParser')) {
+            logDebug('csv-debug', '✓ CSV Parser module loaded successfully', 'success');
+            logDebug('csv-debug', `CSV Parser methods: ${Object.getOwnPropertyNames(csvParser.__proto__).join(', ')}`);
+        } else {
+            logDebug('csv-debug', '✗ CSV Parser module failed to load', 'error');
+        }
+    </script>
+
+    <script>
+        logDebug('quiz-debug', 'Loading quizEngine.js...');
+    </script>
+
+    <script src="scripts/quizEngine.js"></script>
+    <script>
+        if (checkGlobal('quizEngine')) {
+            logDebug('quiz-debug', '✓ Quiz Engine module loaded successfully', 'success');
+            logDebug('quiz-debug', `Quiz Engine methods: ${Object.getOwnPropertyNames(quizEngine.__proto__).join(', ')}`);
+        } else {
+            logDebug('quiz-debug', '✗ Quiz Engine module failed to load', 'error');
+        }
+    </script>
+
+    <script>
+        logDebug('ui-debug', 'Loading ui.js...');
+    </script>
+
+    <script src="scripts/ui.js"></script>
+    <script>
+        if (checkGlobal('ui')) {
+            logDebug('ui-debug', '✓ UI module loaded successfully', 'success');
+            logDebug('ui-debug', `UI methods: ${Object.getOwnPropertyNames(ui.__proto__).join(', ')}`);
+        } else {
+            logDebug('ui-debug', '✗ UI module failed to load', 'error');
+        }
+    </script>
+
+    <script>
+        logDebug('app-debug', 'Loading app.js...');
+    </script>
+
+    <script src="scripts/app.js"></script>
+    <script>
+        if (checkGlobal('vocabApp')) {
+            logDebug('app-debug', '✓ App module loaded successfully', 'success');
+            logDebug('app-debug', `App methods: ${Object.getOwnPropertyNames(vocabApp.__proto__).join(', ')}`);
+        } else {
+            logDebug('app-debug', '✗ App module failed to load', 'error');
+        }
+    </script>
+
+    <script>
+        // Final check
+        setTimeout(() => {
+            logDebug('final-debug', 'Performing final module check...');
+            
+            const modules = ['storage', 'csvParser', 'quizEngine', 'ui', 'vocabApp'];
+            const available = modules.filter(m => checkGlobal(m));
+            const missing = modules.filter(m => !checkGlobal(m));
+            
+            if (available.length === modules.length) {
+                logDebug('final-debug', `✓ All ${modules.length} modules are available!`, 'success');
+            } else {
+                logDebug('final-debug', `✗ Missing modules: ${missing.join(', ')}`, 'error');
+                logDebug('final-debug', `✓ Available modules: ${available.join(', ')}`, 'success');
+            }
+            
+            // Check window object
+            logDebug('final-debug', `Window object keys: ${Object.keys(window).filter(k => modules.includes(k)).join(', ')}`);
+            
+        }, 1000);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Loading Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .log {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Module Loading Order Test</h1>
+    <div id="logs"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        // Track module loading
+        let modulesLoaded = 0;
+        const totalModules = 4;
+
+        function checkModule(name) {
+            if (typeof window[name] !== 'undefined') {
+                modulesLoaded++;
+                log(`✓ ${name} module loaded (${modulesLoaded}/${totalModules})`, 'success');
+                
+                if (modulesLoaded === totalModules) {
+                    log('All modules loaded!', 'success');
+                }
+            } else {
+                log(`✗ ${name} module not available`, 'error');
+            }
+        }
+
+        log('Starting module loading test...');
+    </script>
+
+    <script src="scripts/storage.js" onload="log('storage.js script loaded')" onerror="log('storage.js failed to load', 'error')"></script>
+    <script>
+        checkModule('storage');
+    </script>
+
+    <script src="scripts/csvParser.js" onload="log('csvParser.js script loaded')" onerror="log('csvParser.js failed to load', 'error')"></script>
+    <script>
+        checkModule('csvParser');
+    </script>
+
+    <script src="scripts/quizEngine.js" onload="log('quizEngine.js script loaded')" onerror="log('quizEngine.js failed to load', 'error')"></script>
+    <script>
+        checkModule('quizEngine');
+    </script>
+
+    <script src="scripts/ui.js" onload="log('ui.js script loaded')" onerror="log('ui.js failed to load', 'error')"></script>
+    <script>
+        checkModule('ui');
+    </script>
+
+    <script src="scripts/app.js" onload="log('app.js script loaded')" onerror="log('app.js failed to load', 'error')"></script>
+    <script>
+        setTimeout(() => {
+            checkModule('vocabApp');
+            
+            if (typeof vocabApp !== 'undefined') {
+                log('App initialization completed successfully!', 'success');
+            } else {
+                log('App initialization failed', 'error');
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test UI Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-result {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test UI Fix</h1>
+    <div id="results"></div>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        // Capture console errors
+        const originalError = console.error;
+        const errors = [];
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            originalError.apply(console, args);
+        };
+
+        addResult('Loading modules...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        setTimeout(() => {
+            addResult('Checking module availability...');
+            
+            const modules = ['storage', 'csvParser', 'quizEngine', 'ui', 'vocabApp'];
+            const available = modules.filter(m => typeof window[m] !== 'undefined');
+            const missing = modules.filter(m => typeof window[m] === 'undefined');
+            
+            if (available.length === modules.length) {
+                addResult('✓ All modules loaded successfully!', 'success');
+            } else {
+                addResult(`✗ Missing modules: ${missing.join(', ')}`, 'error');
+            }
+            
+            if (errors.length > 0) {
+                addResult(`Errors found: ${errors.join('; ')}`, 'error');
+            } else {
+                addResult('✓ No errors detected', 'success');
+            }
+            
+            // Test UI initialization
+            if (typeof ui !== 'undefined') {
+                if (ui.isInitialized) {
+                    addResult('✓ UI initialized successfully', 'success');
+                } else {
+                    addResult('⚠ UI module exists but not initialized', 'error');
+                }
+            } else {
+                addResult('✗ UI module not available', 'error');
+            }
+            
+            // Test app initialization
+            if (typeof vocabApp !== 'undefined') {
+                if (vocabApp.isInitialized) {
+                    addResult('✓ App initialized successfully', 'success');
+                } else {
+                    addResult('⚠ App module exists but not initialized', 'error');
+                }
+            } else {
+                addResult('✗ App module not available', 'error');
+            }
+            
+        }, 2000);
+    </script>
+</body>
+</html> 
