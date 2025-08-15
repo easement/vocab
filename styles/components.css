@@ -2,8 +2,8 @@
 
 /* Upload Area Drag and Drop */
 .upload-area.dragover {
-    border-color: #22c55e;
-    background: #f0fdf4;
+    border-color: #EF4135;
+    background: linear-gradient(135deg, rgba(0, 85, 164, 0.15), rgba(239, 65, 53, 0.15));
     transform: scale(1.02);
 }
 
@@ -25,7 +25,7 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid #667eea;
+    border: 2px solid #0055A4;
     border-top: 2px solid transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;

@@ -9,6 +9,7 @@ class UIManager {
         this.screens = {};
         this.modals = {};
         this.isInitialized = false;
+        this.isUploading = false; // Flag to prevent multiple uploads
         
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
@@ -81,6 +82,7 @@ class UIManager {
     setupFileUpload() {
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('file-input');
+        const chooseFileBtn = document.getElementById('choose-file-btn');
 
         // Check if elements exist before setting up event listeners
         if (!uploadArea || !fileInput) {
@@ -88,16 +90,31 @@ class UIManager {
             return;
         }
 
-        // Click to upload
-        uploadArea.addEventListener('click', () => {
+        // Click to upload (upload area)
+        uploadArea.addEventListener('click', (event) => {
+            // Don't trigger if clicking on the button
+            if (event.target.closest('#choose-file-btn')) {
+                return;
+            }
             fileInput.click();
         });
+
+        // Choose file button
+        if (chooseFileBtn) {
+            chooseFileBtn.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent upload area click
+                fileInput.click();
+            });
+        }
 
         // File input change
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
-            if (file) {
+            if (file && !this.isUploading) {
+                this.isUploading = true;
                 this.handleFileUpload(file);
+                // Clear the file input to allow re-uploading the same file
+                event.target.value = '';
             }
         });
 
@@ -117,7 +134,8 @@ class UIManager {
             uploadArea.classList.remove('dragover');
             
             const files = event.dataTransfer.files;
-            if (files.length > 0) {
+            if (files.length > 0 && !this.isUploading) {
+                this.isUploading = true;
                 this.handleFileUpload(files[0]);
             }
         });
@@ -282,6 +300,7 @@ class UIManager {
             this.showError(error.message);
         } finally {
             this.hideLoadingState();
+            this.isUploading = false; // Reset upload flag
         }
     }
 
