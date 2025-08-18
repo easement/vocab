@@ -124,6 +124,7 @@ class StorageManager {
                 theme: settings.theme || 'light',
                 soundEnabled: settings.soundEnabled !== undefined ? settings.soundEnabled : true,
                 keyboardShortcuts: settings.keyboardShortcuts !== undefined ? settings.keyboardShortcuts : true,
+                flipMode: settings.flipMode !== undefined ? settings.flipMode : false,
                 lastUpdated: new Date().toISOString()
             };
             localStorage.setItem(this.SETTINGS_KEY, JSON.stringify(data));
@@ -147,6 +148,7 @@ class StorageManager {
                     theme: 'light',
                     soundEnabled: true,
                     keyboardShortcuts: true,
+                    flipMode: false,
                     lastUpdated: null
                 };
             }
@@ -157,6 +159,7 @@ class StorageManager {
                 theme: settings.theme || 'light',
                 soundEnabled: settings.soundEnabled !== undefined ? settings.soundEnabled : true,
                 keyboardShortcuts: settings.keyboardShortcuts !== undefined ? settings.keyboardShortcuts : true,
+                flipMode: settings.flipMode !== undefined ? settings.flipMode : false,
                 lastUpdated: settings.lastUpdated || null
             };
         } catch (error) {
@@ -166,6 +169,7 @@ class StorageManager {
                 theme: 'light',
                 soundEnabled: true,
                 keyboardShortcuts: true,
+                flipMode: false,
                 lastUpdated: null
             };
         }

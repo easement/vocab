@@ -58,14 +58,14 @@ voiture,car</code></pre>
                         </div>
                     </div>
                 </div>
-                <button id="reset-btn" class="btn btn-secondary" aria-label="Reset progress">Reset</button>
+
             </header>
 
             <main>
                 <div class="quiz-container">
                     <div class="question-section">
-                        <h2 id="french-word">Select a word</h2>
-                        <p class="instruction">Choose the correct English translation:</p>
+                        <h2 id="question-word">Select a word</h2>
+                        <p class="instruction" id="instruction-text">Choose the correct English translation:</p>
                     </div>
 
                     <div class="answers-section">
@@ -117,6 +117,16 @@ voiture,car</code></pre>
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Floating Footer Controls -->
+    <div id="footer-controls" aria-label="Game controls">
+        <div class="footer-inner">
+            <button id="flip-mode-btn" class="btn btn-secondary" aria-label="Toggle quiz direction">
+                <span id="flip-mode-text">🇫🇷 → 🇬🇧</span>
+            </button>
+            <button id="reset-btn" class="btn btn-secondary" aria-label="Reset progress">Reset</button>
         </div>
     </div>
 

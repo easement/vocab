@@ -159,6 +159,20 @@ header p {
     gap: 1rem;
 }
 
+.header-actions {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+/* Reset header padding now that actions moved out */
+header { 
+    padding-right: 2rem;
+}
+
 /* Progress Container */
 .progress-container {
     width: 100%;
@@ -689,12 +703,10 @@ main {
     justify-content: center;
 }
 
-/* Reset Button */
+/* Header Action Buttons */
+#flip-mode-btn,
 #reset-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem;
     font-size: 0.9rem;
     min-width: auto;
     background: rgba(255, 255, 255, 0.9);
@@ -703,14 +715,27 @@ main {
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 10;
+    border-radius: 12px;
 }
 
+#flip-mode-btn:hover,
 #reset-btn:hover {
     background: white;
     color: #0055A4;
     border-color: white;
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+#flip-mode-btn {
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#flip-mode-btn.active {
+    background: linear-gradient(135deg, #0055A4, #EF4135);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.9);
 }
 
 /* Responsive Design */
@@ -754,6 +779,12 @@ main {
     }
 }
 
+@media (max-width: 480px) {
+    header {
+        padding-right: 1rem;
+    }
+}
+
 @media (min-width: 1024px) {
     #app {
         max-width: 800px;
@@ -790,4 +821,32 @@ main {
     .answer-btn {
         border-width: 3px;
     }
+} 
+
+/* Footer Controls */
+#footer-controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: center;
+    pointer-events: none; /* allow inner to manage clicks */
+}
+
+#footer-controls .footer-inner {
+    pointer-events: all;
+    display: flex;
+    gap: 0.75rem;
+    background: rgba(255,255,255,0.85);
+    border: 2px solid rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 0.5rem 0.75rem;
+    border-radius: 14px;
+}
+
+#footer-controls .btn {
+    min-width: 110px;
 } 

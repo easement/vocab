@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Flip Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Flip Mode Functionality</h1>
+    
+    <div class="test-panel">
+        <h2>Instructions</h2>
+        <p>1. Upload the sample CSV file</p>
+        <p>2. Test the flip mode button (🇫🇷 → 🇬🇧 / 🇬🇧 → 🇫🇷)</p>
+        <p>3. Verify the quiz direction changes</p>
+        <p>4. Check that progress is maintained when switching</p>
+        <p>5. Verify the mode persists after page reload</p>
+    </div>
+
+    <div class="test-panel">
+        <h2>Test Log</h2>
+        <div id="test-log"></div>
+    </div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('test-log');
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(div);
+        }
+
+        let originalGetNextWord;
+        let originalToggleFlipMode;
+        let flipModeChanges = 0;
+
+        addLog('Setting up flip mode monitoring...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        setTimeout(() => {
+            if (typeof quizEngine !== 'undefined' && typeof ui !== 'undefined') {
+                // Override methods to track flip mode changes
+                originalGetNextWord = quizEngine.getNextWord;
+                originalToggleFlipMode = quizEngine.toggleFlipMode;
+
+                quizEngine.getNextWord = function() {
+                    const result = originalGetNextWord.call(this);
+                    if (result) {
+                        const mode = result.mode || 'unknown';
+                        addLog(`Quiz mode: ${mode}`, 'info');
+                    }
+                    return result;
+                };
+
+                quizEngine.toggleFlipMode = function() {
+                    flipModeChanges++;
+                    const newMode = originalToggleFlipMode.call(this);
+                    addLog(`Flip mode toggled to: ${newMode ? 'English → French' : 'French → English'} (change #${flipModeChanges})`, 'success');
+                    return newMode;
+                };
+
+                addLog('Flip mode monitoring active', 'success');
+                addLog('Ready to test! Upload a CSV file and test the flip mode button.');
+            } else {
+                addLog('Required modules not available', 'warning');
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

@@ -164,6 +164,14 @@ class UIManager {
             });
         }
 
+        // Flip mode button
+        const flipModeBtn = document.getElementById('flip-mode-btn');
+        if (flipModeBtn) {
+            flipModeBtn.addEventListener('click', () => {
+                this.handleFlipModeToggle();
+            });
+        }
+
         // Completion screen buttons
         const restartButton = document.getElementById('restart-btn');
         const newVocabButton = document.getElementById('new-vocab-btn');
@@ -290,6 +298,7 @@ class UIManager {
                 // Show quiz screen
                 this.showQuizScreen();
                 this.loadNextWord();
+                this.updateFlipModeButton(quizEngine.getFlipMode());
                 
                 // Show success message
                 this.showSuccessMessage(`Successfully loaded ${result.vocabulary.length} words!`);
@@ -359,6 +368,45 @@ class UIManager {
     }
 
     /**
+     * Handle flip mode toggle
+     */
+    handleFlipModeToggle() {
+        const newMode = quizEngine.toggleFlipMode();
+        this.updateFlipModeButton(newMode);
+        
+        // Save the current state including flip mode
+        storage.saveVocabulary(quizEngine.getVocabulary());
+        storage.saveProgress(quizEngine.getProgress());
+        
+        // Save flip mode to settings
+        const settings = storage.loadSettings();
+        settings.flipMode = newMode;
+        storage.saveSettings(settings);
+        
+        // Reload the current word with new mode
+        this.loadNextWord();
+    }
+
+    /**
+     * Update flip mode button appearance
+     * @param {boolean} isFlipped - Whether the mode is flipped
+     */
+    updateFlipModeButton(isFlipped) {
+        const flipModeBtn = document.getElementById('flip-mode-btn');
+        const flipModeText = document.getElementById('flip-mode-text');
+        
+        if (flipModeBtn && flipModeText) {
+            if (isFlipped) {
+                flipModeBtn.classList.add('active');
+                flipModeText.textContent = '🇬🇧 → 🇫🇷';
+            } else {
+                flipModeBtn.classList.remove('active');
+                flipModeText.textContent = '🇫🇷 → 🇬🇧';
+            }
+        }
+    }
+
+    /**
      * Handle confirm reset
      */
     handleConfirmReset() {
@@ -402,6 +450,7 @@ class UIManager {
     showQuizScreen() {
         this.switchScreen('quiz');
         this.updateProgress();
+        this.updateFlipModeButton(quizEngine.getFlipMode());
     }
 
     /**
@@ -455,10 +504,20 @@ class UIManager {
             return;
         }
 
-        // Update French word
-        const frenchWord = document.getElementById('french-word');
-        if (frenchWord) {
-            frenchWord.textContent = wordData.french;
+        // Update question word
+        const questionWord = document.getElementById('question-word');
+        if (questionWord) {
+            questionWord.textContent = wordData.question;
+        }
+
+        // Update instruction text based on mode
+        const instructionText = document.getElementById('instruction-text');
+        if (instructionText) {
+            if (wordData.mode === 'english-to-french') {
+                instructionText.textContent = 'Choose the correct French translation:';
+            } else {
+                instructionText.textContent = 'Choose the correct English translation:';
+            }
         }
 
         // Update answer options

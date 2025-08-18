@@ -59,6 +59,12 @@ class VocabularyApp {
             if (!hasExistingData) {
                 // Show upload screen for new users
                 ui.showUploadScreen();
+            } else {
+                // Load flip mode from settings
+                const settings = storage.loadSettings();
+                if (settings && typeof settings.flipMode === 'boolean') {
+                    quizEngine.setFlipMode(settings.flipMode);
+                }
             }
 
             // Apply theme if needed

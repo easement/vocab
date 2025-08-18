@@ -10,6 +10,7 @@ class QuizEngine {
         this.currentOptions = [];
         this.correctAnswer = '';
         this.answeredWords = new Set();
+        this.flipMode = false; // false = French to English, true = English to French
         this.stats = {
             totalWords: 0,
             masteredWords: 0,
@@ -54,15 +55,28 @@ class QuizEngine {
         const randomIndex = Math.floor(Math.random() * availableWords.length);
         this.currentWord = availableWords[randomIndex];
 
-        // Generate multiple choice options
+        // Generate multiple choice options based on flip mode
         this.currentOptions = this.generateOptions(this.currentWord);
-        this.correctAnswer = this.currentWord.english;
-
-        return {
-            french: this.currentWord.french,
-            options: this.currentOptions,
-            correctAnswer: this.correctAnswer
-        };
+        
+        if (this.flipMode) {
+            // English to French mode
+            this.correctAnswer = this.currentWord.french;
+            return {
+                question: this.currentWord.english,
+                options: this.currentOptions,
+                correctAnswer: this.correctAnswer,
+                mode: 'english-to-french'
+            };
+        } else {
+            // French to English mode
+            this.correctAnswer = this.currentWord.english;
+            return {
+                question: this.currentWord.french,
+                options: this.currentOptions,
+                correctAnswer: this.correctAnswer,
+                mode: 'french-to-english'
+            };
+        }
     }
 
     /**
@@ -71,22 +85,43 @@ class QuizEngine {
      * @returns {Array} Array of 4 options with correct answer included
      */
     generateOptions(word) {
-        const options = [word.english]; // Start with correct answer
-        
-        // Get all other English translations for incorrect options
-        const otherAnswers = this.vocabulary
-            .filter(item => item.english !== word.english)
-            .map(item => item.english);
+        if (this.flipMode) {
+            // English to French mode - generate French options
+            const options = [word.french]; // Start with correct answer
+            
+            // Get all other French words for incorrect options
+            const otherAnswers = this.vocabulary
+                .filter(item => item.french !== word.french)
+                .map(item => item.french);
 
-        // Shuffle and take up to 3 incorrect options
-        const shuffledOthers = this.shuffleArray([...otherAnswers]);
-        const incorrectOptions = shuffledOthers.slice(0, 3);
+            // Shuffle and take up to 3 incorrect options
+            const shuffledOthers = this.shuffleArray([...otherAnswers]);
+            const incorrectOptions = shuffledOthers.slice(0, 3);
 
-        // Combine correct and incorrect options
-        const allOptions = [...options, ...incorrectOptions];
-        
-        // Shuffle the final options array
-        return this.shuffleArray(allOptions);
+            // Combine correct and incorrect options
+            const allOptions = [...options, ...incorrectOptions];
+            
+            // Shuffle the final options array
+            return this.shuffleArray(allOptions);
+        } else {
+            // French to English mode - generate English options
+            const options = [word.english]; // Start with correct answer
+            
+            // Get all other English translations for incorrect options
+            const otherAnswers = this.vocabulary
+                .filter(item => item.english !== word.english)
+                .map(item => item.english);
+
+            // Shuffle and take up to 3 incorrect options
+            const shuffledOthers = this.shuffleArray([...otherAnswers]);
+            const incorrectOptions = shuffledOthers.slice(0, 3);
+
+            // Combine correct and incorrect options
+            const allOptions = [...options, ...incorrectOptions];
+            
+            // Shuffle the final options array
+            return this.shuffleArray(allOptions);
+        }
     }
 
     /**
@@ -296,6 +331,7 @@ class QuizEngine {
             vocabulary: this.getVocabulary(),
             stats: { ...this.stats },
             answeredWords: Array.from(this.answeredWords),
+            flipMode: this.flipMode,
             timestamp: new Date().toISOString()
         };
     }
@@ -317,7 +353,36 @@ class QuizEngine {
             this.answeredWords = new Set(state.answeredWords);
         }
         
+        if (state.flipMode !== undefined) {
+            this.flipMode = state.flipMode;
+        }
+        
         this.updateStats();
+    }
+
+    /**
+     * Toggle flip mode (French to English vs English to French)
+     * @returns {boolean} New flip mode state
+     */
+    toggleFlipMode() {
+        this.flipMode = !this.flipMode;
+        return this.flipMode;
+    }
+
+    /**
+     * Get current flip mode
+     * @returns {boolean} Current flip mode state
+     */
+    getFlipMode() {
+        return this.flipMode;
+    }
+
+    /**
+     * Set flip mode explicitly
+     * @param {boolean} mode - Flip mode to set
+     */
+    setFlipMode(mode) {
+        this.flipMode = mode;
     }
 }
 
