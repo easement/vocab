@@ -125,7 +125,8 @@ header h1 {
     color: white;
 }
 
-header h1::before {
+/* French flag emojis for all headers (consistent structure) */
+.header-content h1::before {
     content: '🇫🇷';
     position: absolute;
     left: -1.5rem;
@@ -134,7 +135,7 @@ header h1::before {
     font-size: 1.2rem;
 }
 
-header h1::after {
+.header-content h1::after {
     content: '🇫🇷';
     position: absolute;
     right: -1.5rem;
@@ -877,6 +878,16 @@ main {
     display: flex;
     justify-content: center;
     pointer-events: none; /* allow inner to manage clicks */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show footer controls when quiz or completion screen is active */
+body:has(#quiz-screen.active) #footer-controls,
+body:has(#completion-screen.active) #footer-controls {
+    opacity: 1;
+    visibility: visible;
 }
 
 #footer-controls .footer-inner {
