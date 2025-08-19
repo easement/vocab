@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sample Vocabulary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Sample Vocabulary Functionality</h1>
+    
+    <div class="test-panel">
+        <h2>Instructions</h2>
+        <p>1. Click the "Use Sample Vocabulary" button</p>
+        <p>2. Verify that 20 sample words are loaded</p>
+        <p>3. Check that the quiz starts with the sample vocabulary</p>
+        <p>4. Verify that progress is saved and can be restored</p>
+    </div>
+
+    <div class="test-panel">
+        <h2>Test Log</h2>
+        <div id="test-log"></div>
+    </div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('test-log');
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(div);
+        }
+
+        let originalHandleSampleVocabulary;
+        let sampleVocabularyLoaded = false;
+
+        addLog('Setting up sample vocabulary monitoring...');
+    </script>
+
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/csvParser.js"></script>
+    <script src="scripts/quizEngine.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        setTimeout(() => {
+            if (typeof csvParser !== 'undefined' && typeof ui !== 'undefined') {
+                // Override handleSampleVocabulary to track calls
+                originalHandleSampleVocabulary = ui.handleSampleVocabulary;
+                
+                ui.handleSampleVocabulary = function() {
+                    addLog('Sample vocabulary button clicked', 'success');
+                    sampleVocabularyLoaded = true;
+                    
+                    // Get sample vocabulary and log it
+                    const sampleVocab = csvParser.getSampleVocabulary();
+                    addLog(`Sample vocabulary contains ${sampleVocab.length} words`, 'info');
+                    
+                    // Log first few words
+                    const preview = sampleVocab.slice(0, 5).map(w => `${w.french} → ${w.english}`).join(', ');
+                    addLog(`Preview: ${preview}...`, 'info');
+                    
+                    return originalHandleSampleVocabulary.call(this);
+                };
+
+                // Test the sample vocabulary data
+                const sampleVocab = csvParser.getSampleVocabulary();
+                addLog(`Sample vocabulary available: ${sampleVocab.length} words`, 'success');
+                
+                addLog('Sample vocabulary monitoring active', 'success');
+                addLog('Ready to test! Click the "Use Sample Vocabulary" button.');
+            } else {
+                addLog('Required modules not available', 'warning');
+            }
+        }, 1000);
+    </script>
+</body>
+</html> 

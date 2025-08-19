@@ -107,6 +107,14 @@ class UIManager {
             });
         }
 
+        // Use sample vocabulary button
+        const useSampleBtn = document.getElementById('use-sample-btn');
+        if (useSampleBtn) {
+            useSampleBtn.addEventListener('click', () => {
+                this.handleSampleVocabulary();
+            });
+        }
+
         // File input change
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -284,24 +292,7 @@ class UIManager {
             const result = await csvParser.parseFile(file);
             
             if (result.success) {
-                // Initialize quiz engine
-                quizEngine.initialize(result.vocabulary);
-                
-                // Save to storage
-                storage.saveVocabulary(result.vocabulary);
-                storage.saveProgress({
-                    masteredCount: 0,
-                    totalCount: result.vocabulary.length,
-                    percentage: 0
-                });
-                
-                // Show quiz screen
-                this.showQuizScreen();
-                this.loadNextWord();
-                this.updateFlipModeButton(quizEngine.getFlipMode());
-                
-                // Show success message
-                this.showSuccessMessage(`Successfully loaded ${result.vocabulary.length} words!`);
+                this.initializeQuizWithVocabulary(result.vocabulary);
             } else {
                 this.showError(result.error);
             }
@@ -311,6 +302,48 @@ class UIManager {
             this.hideLoadingState();
             this.isUploading = false; // Reset upload flag
         }
+    }
+
+    /**
+     * Handle sample vocabulary selection
+     */
+    handleSampleVocabulary() {
+        try {
+            this.showLoadingState();
+            
+            const sampleVocabulary = csvParser.getSampleVocabulary();
+            this.initializeQuizWithVocabulary(sampleVocabulary);
+            
+        } catch (error) {
+            this.showError(error.message);
+        } finally {
+            this.hideLoadingState();
+        }
+    }
+
+    /**
+     * Initialize quiz with vocabulary data
+     * @param {Array} vocabulary - Vocabulary array
+     */
+    initializeQuizWithVocabulary(vocabulary) {
+        // Initialize quiz engine
+        quizEngine.initialize(vocabulary);
+        
+        // Save to storage
+        storage.saveVocabulary(vocabulary);
+        storage.saveProgress({
+            masteredCount: 0,
+            totalCount: vocabulary.length,
+            percentage: 0
+        });
+        
+        // Show quiz screen
+        this.showQuizScreen();
+        this.loadNextWord();
+        this.updateFlipModeButton(quizEngine.getFlipMode());
+        
+        // Show success message
+        this.showSuccessMessage(`Successfully loaded ${vocabulary.length} words!`);
     }
 
     /**

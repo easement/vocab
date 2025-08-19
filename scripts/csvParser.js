@@ -289,6 +289,35 @@ class CSVParser {
     }
 
     /**
+     * Get sample vocabulary data
+     * @returns {Array} Array of sample vocabulary objects
+     */
+    getSampleVocabulary() {
+        return [
+            { french: 'bonjour', english: 'hello' },
+            { french: 'au revoir', english: 'goodbye' },
+            { french: 'merci', english: 'thank you' },
+            { french: 's\'il vous plaît', english: 'please' },
+            { french: 'oui', english: 'yes' },
+            { french: 'non', english: 'no' },
+            { french: 'chat', english: 'cat' },
+            { french: 'chien', english: 'dog' },
+            { french: 'maison', english: 'house' },
+            { french: 'voiture', english: 'car' },
+            { french: 'livre', english: 'book' },
+            { french: 'table', english: 'table' },
+            { french: 'pain', english: 'bread' },
+            { french: 'eau', english: 'water' },
+            { french: 'café', english: 'coffee' },
+            { french: 'temps', english: 'time' },
+            { french: 'jour', english: 'day' },
+            { french: 'nuit', english: 'night' },
+            { french: 'famille', english: 'family' },
+            { french: 'ami', english: 'friend' }
+        ];
+    }
+
+    /**
      * Export vocabulary to CSV format
      * @param {Array} vocabulary - Array of vocabulary objects
      * @returns {string} CSV formatted string
