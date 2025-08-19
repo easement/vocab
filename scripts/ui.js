@@ -578,11 +578,11 @@ class UIManager {
         const feedbackText = document.getElementById('feedback-text');
 
         if (feedbackSection && feedbackIcon && feedbackText) {
-            // Set feedback content
-            feedbackIcon.textContent = result.isCorrect ? '✅' : '❌';
-            feedbackText.textContent = result.feedback;
+            // Hide feedback content
+            feedbackIcon.textContent = '';
+            feedbackText.textContent = '';
 
-            // Show feedback section
+            // Show feedback section (for next button)
             feedbackSection.hidden = false;
 
             // Highlight correct/incorrect answers
